@@ -1,25 +1,21 @@
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.SelenideElement;
-import org.junit.jupiter.api.BeforeAll;  // Импорт для @BeforeAll
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import static com.codeborne.selenide.Selenide.*;
 
 public class FormTest {
 
-    // Добавим метод инициализации для настройки ChromeDriver
     @BeforeAll
     public static void setUp() {
-        // Установка пути к драйверу для Chrome
-        System.setProperty("webdriver.chrome.driver", "D:\\Download\\chromedriver\\chromedriver.exe");
+        // Устанавливаем относительный путь к драйверу для Chrome
+        String relativePath = "drivers/chromedriver.exe";
+        String absolutePath = new File(relativePath).getAbsolutePath();
+        System.setProperty("webdriver.chrome.driver", absolutePath);
     }
 
     private String generationDate(int addDays, String pattern) {
