@@ -19,6 +19,14 @@ jobs:
         java-version: 11
         distribution: 'adopt'
 
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
     - name: Download and install ChromeDriver
       run: |
         CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
@@ -26,7 +34,8 @@ jobs:
         unzip chromedriver_linux64.zip
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
-
+        chromedriver --version  # Output ChromeDriver version for verification
+    
     - name: Grant execute permission to gradlew
       run: chmod +x gradlew
 
