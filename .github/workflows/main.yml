@@ -21,7 +21,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        java -jar ./artifacts/app-card-delivery.jar &
+        java -jar ./artifacts/app-card-delivery.jar
 
     - name: Build with Gradle
       run: ./gradlew test 
