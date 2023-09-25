@@ -1,30 +1,34 @@
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Selenide.*;
 
 public class FormTest {
 
+    private String generationDate (int addDays, String pattern) {
+        return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
+    }
+
     @Test
     public void testFormSubmission() {
-        // Открыть страницу
-        open("ваш_адрес_страницы");
-
-        // Заполнить поля формы
-        $("[data-test-id='city']").setValue("Москва");
-        $("[data-test-id='date']").setValue("31.12.2023");
-        $("[data-test-id='name']").setValue("Иван Иванов");
-        $("[data-test-id='phone']").setValue("+79123456789");
+        open("http://localhost:9999/");
+        $("[data-test-id='city'] input").setValue("Москва");
+        String planningDate = generationDate(4,"dd.MM.yyyy");
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(planningDate);
+        $("[data-test-id='name'] input").setValue("Иван Иванов");
+        $("[data-test-id='phone'] input").setValue("+79123456789");
         $("[data-test-id='agreement']").click();
-
-        // Отправить форму
-        $(".button_theme_alfa-on-white").click();
-
-        // Проверить состояние загрузки
-        $("[data-test-id='loading']").should(Condition.appear);
-
-        // Проверить появление всплывающего окна об успешном завершении
-        $("[data-test-id='success-popup']").should(Condition.appear);
+        $("button.button").click();
+        $(".notification__content")
+                .shouldBe(Condition.visible, Duration.ofSeconds(15))
+                .shouldHave(Condition.exactText("Встреча успешно забронирована на " + planningDate));
     }
 }
