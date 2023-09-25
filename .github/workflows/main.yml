@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   build:
-    runs-on: windows-latest  # Используем windows-latest для запуска на Windows
+    runs-on: windows-latest
     
     steps:
     - name: Checkout code
@@ -26,20 +26,24 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    
+
     - name: Download and install ChromeDriver
       run: |
         # Скачиваем chromedriver
-        CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        wget https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_win32.zip
-        unzip chromedriver_win32.zip
+        $CHROME_DRIVER_VERSION = (Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").Content
+        Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_win32.zip" -OutFile "chromedriver_win32.zip"
+        Expand-Archive -Path "chromedriver_win32.zip" -DestinationPath .
 
         # Перемещаем chromedriver в System32
-        move chromedriver.exe C:\Windows\System32
+        Move-Item -Path "chromedriver.exe" -Destination "C:\Windows\System32"
         chromedriver --version  # Печатаем версию для проверки
-    
+
     - name: Grant execute permission to gradlew
-      run: chmod +x gradlew
+      run: |
+        # Grant execute permission to gradlew
+        chmod +x gradlew
 
     - name: Install dependencies and run tests
       run: ./gradlew test --info
+      env:
+        JAVA_HOME: C:\hostedtoolcache\windows\Java_Adopt_jdk\11.0.20-101\x64
