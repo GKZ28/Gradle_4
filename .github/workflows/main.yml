@@ -23,6 +23,9 @@ jobs:
         server-password: ${{ secrets.GITHUB_TOKEN }}
         overwrite-settings: true
 
+    - name: Grant execute permissions to gradlew
+      run: chmod +x gradlew
+
     - name: Build and test
       run: ./gradlew clean test
 
