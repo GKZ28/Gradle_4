@@ -7,7 +7,7 @@ on:
       
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Используем windows-latest для запуска на Windows
     
     steps:
     - name: Checkout code
@@ -29,12 +29,14 @@ jobs:
     
     - name: Download and install ChromeDriver
       run: |
+        # Скачиваем chromedriver
         CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        wget https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        chmod +x chromedriver
-        sudo mv chromedriver /usr/local/bin/
-        chromedriver --version  # Output ChromeDriver version for verification
+        wget https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_win32.zip
+        unzip chromedriver_win32.zip
+
+        # Перемещаем chromedriver в System32
+        move chromedriver.exe C:\Windows\System32
+        chromedriver --version  # Печатаем версию для проверки
     
     - name: Grant execute permission to gradlew
       run: chmod +x gradlew
