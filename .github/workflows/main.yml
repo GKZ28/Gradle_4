@@ -22,7 +22,6 @@ jobs:
     - name: Install dependencies
       run: |
         java -jar ./artifacts/app-card-delivery.jar &
-        chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew test --info
+      run: ./gradlew test 
