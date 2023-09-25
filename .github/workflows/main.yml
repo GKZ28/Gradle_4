@@ -1,4 +1,4 @@
-name: Gradle Build
+name: Gradle Selenide Test
 
 on:
   push:
@@ -8,20 +8,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up JDK 11
+    - name: Setup JDK
       uses: actions/setup-java@v2
       with:
-        java-version: 11
-        distribution: 'adopt'
+        java-version: '11'
 
-    - name: Install dependencies
-      run: |
-        java -jar ./artifacts/app-card-delivery.jar
+    - name: Build and test
+      run: ./gradlew clean test
 
-    - name: Build with Gradle
-      run: ./gradlew test 
+    - name: Run JAR file
+      run: java -jar ./artifacts/app-card-delivery.jar
