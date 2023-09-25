@@ -21,7 +21,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        java -jar ./artifacts/app-order.jar &
+        java -jar ./artifacts/app-card-delivery.jar &
         chmod +x gradlew
 
     - name: Build with Gradle
