@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -19,31 +19,10 @@ jobs:
         java-version: 11
         distribution: 'adopt'
 
-    - name: Cache Gradle dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Download and install ChromeDriver
+    - name: Install dependencies
       run: |
-        # Скачиваем chromedriver
-        $CHROME_DRIVER_VERSION = (Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").Content
-        Invoke-WebRequest -Uri "https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_win32.zip" -OutFile "chromedriver_win32.zip"
-        Expand-Archive -Path "chromedriver_win32.zip" -DestinationPath .
-
-        # Перемещаем chromedriver в System32
-        Move-Item -Path "chromedriver.exe" -Destination "C:\Windows\System32"
-        chromedriver --version  # Печатаем версию для проверки
-
-    - name: Grant execute permission to gradlew
-      run: |
-        # Grant execute permission to gradlew
+        java -jar ./artifacts/app-card-delivery.jar &
         chmod +x gradlew
 
-    - name: Install dependencies and run tests
+    - name: Build with Gradle
       run: ./gradlew test --info
-      env:
-        JAVA_HOME: C:\hostedtoolcache\windows\Java_Adopt_jdk\11.0.20-101\x64
