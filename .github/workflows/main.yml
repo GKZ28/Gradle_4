@@ -27,5 +27,8 @@ jobs:
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
 
+    - name: Grant execute permission to gradlew
+      run: chmod +x gradlew
+
     - name: Install dependencies and run tests
       run: ./gradlew test --info -Dselenide.headless=true
