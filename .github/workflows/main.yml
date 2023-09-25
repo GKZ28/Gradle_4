@@ -19,10 +19,18 @@ jobs:
         java-version: 11
         distribution: 'adopt'
 
-    - name: Install dependencies
-      run: |
-        java -jar ./artifacts/app-card-delivery.jar &
-        chmod +x gradlew
+    - name: Install Chrome browser
+      run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
 
-    - name: Build with Gradle
-      run: ./gradlew test --info -Dselenide.headless=true
+    - name: Download and install ChromeDriver
+      run: |
+        wget https://chromedriver.storage.googleapis.com/117.0.5938.92/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        chmod +x chromedriver
+        sudo mv chromedriver /usr/local/bin/
+
+    - name: Install dependencies
+      run: java -jar ./artifacts/app-card-delivery.jar &
+
+    - name: Build with Gradle and run tests
+      run: ./gradlew clean test --info -Dselenide.headless=true
