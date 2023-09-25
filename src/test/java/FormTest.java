@@ -1,12 +1,15 @@
-import java.io.File;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import static com.codeborne.selenide.Selenide.*;
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
+
+import java.io.File;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
 
 public class FormTest {
 
@@ -14,11 +17,19 @@ public class FormTest {
     public static void setUp() {
         // Устанавливаем относительный путь к драйверу для Chrome
         String relativePath = "drivers/chromedriver.exe";
-        String absolutePath = new File(relativePath).getAbsolutePath();
+        File driverFile = new File(relativePath);
+
+        // Проверяем, что файл существует и является исполняемым
+        if (!driverFile.exists() || !driverFile.canExecute()) {
+            System.out.println("Error: chromedriver.exe does not exist or is not executable.");
+            return;
+        }
+
+        String absolutePath = driverFile.getAbsolutePath();
         System.setProperty("webdriver.chrome.driver", absolutePath);
     }
 
-    private String generationDate(int addDays, String pattern) {
+    private String generateDate(int addDays, String pattern) {
         return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
     }
 
@@ -26,7 +37,7 @@ public class FormTest {
     public void testFormSubmission() {
         open("http://localhost:9999/");
         $("[data-test-id='city'] input").setValue("Москва");
-        String planningDate = generationDate(4, "dd.MM.yyyy");
+        String planningDate = generateDate(4, "dd.MM.yyyy");
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id='date'] input").setValue(planningDate);
         $("[data-test-id='name'] input").setValue("Иван Иванов");
