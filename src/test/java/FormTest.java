@@ -5,15 +5,24 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import org.junit.jupiter.api.BeforeAll;  // Импорт для @BeforeAll
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import static com.codeborne.selenide.Selenide.*;
 
 public class FormTest {
 
-    private String generationDate (int addDays, String pattern) {
+    // Добавим метод инициализации для настройки ChromeDriver
+    @BeforeAll
+    public static void setUp() {
+        // Установка пути к драйверу для Chrome
+        System.setProperty("webdriver.chrome.driver", "D:\\Download\\chromedriver\\chromedriver.exe");
+    }
+
+    private String generationDate(int addDays, String pattern) {
         return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
     }
 
@@ -21,7 +30,7 @@ public class FormTest {
     public void testFormSubmission() {
         open("http://localhost:9999/");
         $("[data-test-id='city'] input").setValue("Москва");
-        String planningDate = generationDate(4,"dd.MM.yyyy");
+        String planningDate = generationDate(4, "dd.MM.yyyy");
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id='date'] input").setValue(planningDate);
         $("[data-test-id='name'] input").setValue("Иван Иванов");
