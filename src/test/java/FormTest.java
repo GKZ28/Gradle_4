@@ -24,22 +24,6 @@ public class FormTest {
         WebDriverManager.chromedriver().setup();
         }
 
-    @BeforeEach
-    public void beforeEach() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
-        driver.get("http://localhost:9999");
-    }
-
-    @AfterEach
-    public void afterEach() {
-        driver.quit();
-        driver = null;
-    }
-
     private String generateDate(int addDays, String pattern) {
         return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
     }
