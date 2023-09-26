@@ -1,9 +1,14 @@
 import com.codeborne.selenide.Condition;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,20 +18,27 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class FormTest {
 
+    private WebDriver driver;
+
     @BeforeAll
     public static void setUp() {
-        // Устанавливаем относительный путь к драйверу для Chrome
-        String relativePath = "drivers/chromedriver.exe";
-        File driverFile = new File(relativePath);
+        WebDriverManager.chromedriver().setup();
+    }
 
-        // Проверяем, что файл существует и является исполняемым
-        if (!driverFile.exists() || !driverFile.canExecute()) {
-            System.out.println("Error: chromedriver.exe does not exist or is not executable.");
-            return;
-        }
+    @BeforeEach
+    public void beforeEach() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--headless");
+        driver = new ChromeDriver(options);
+        driver.get("http://localhost:9999");
+    }
 
-        String absolutePath = driverFile.getAbsolutePath();
-        System.setProperty("webdriver.chrome.driver", absolutePath);
+    @AfterEach
+    public void afterEach() {
+        driver.quit();
+        driver = null;
     }
 
     private String generateDate(int addDays, String pattern) {
